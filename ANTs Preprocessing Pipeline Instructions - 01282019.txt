@@ -1,0 +1,70 @@
+ANTs Preprocessing Pipeline Instructions - 01282019
+
+1. In Matlab, run 'organize4ants_automated.m' or 'organize4ants_point_click.m'
+
+	-Purpose: rename files in a way that will be intelligible to ANTs preprocessing scripts; this is done in rough accordance with BIDS (http://bids.neuroimaging.io/)
+
+	-Method: Enables a user to select the appropriate neuroimaging files using the point-and-click method in file explorer menus or via automated scripting
+
+		-hint: pay attention to the title of file explorer menus, which will indicate, e.g., "Select anatomical image 01..."
+
+	-all files are automatically renamed in rough accordance with the BIDS spec & copied to a single folder of the user's choosing 
+
+		(a single folder is helpful for ANTs preprocessing, but a later Matlab script will be used to drop the final files into BIDS-style directories)
+
+	-note: the script does not delete the original files, and it also writes out a 'file_correspondence_info.txt' file showing the correspondence between the original files and the renamed files
+
+		-hint: double-check that the file correspondence is correct and as expected; an error here could be VERY costly and difficult to spot later
+
+	-Limition: this script currently only works for a dataset that consists of a number of subjects with a number of functional runs; i.e., it will not work if there are also variable numbers
+		of "sessions", "trials", etc.; if a different organization is needed, this can be updated accordingly
+
+		-also, this will likely only work for functional images as 4D NIfTI's (.nii) or 4D gunzip NIfTI's (.nii.gz)
+
+2. If step 1 performed locally, upload the resulting data folder to Midway in whatever location the user prefers (e.g., /scratch/midway/elayden/data_folder)
+
+	-WinSCP works well for file transfer to Midway due to its clean and simple interface, although other options are available: https://rcc.uchicago.edu/docs/data-transfer/index.html
+
+3. Edit the 'ants_preprocessing_single_midway2.sbatch' script, located within the data folder, to reflect study-specific parameters: 
+
+	-hint: in a Midway terminal window, type, e.g.: "emacs ants_preprocessing_midway2.sbatch" to edit the file using the Emacs text editor (make sure your current directory is correct)
+
+	-note: editing 'ants_preprocessing_single_midway2.sbatch' could also be done prior to upload onto Midway, if preferred
+
+4. Submit the sbatch script to Midway:  in a terminal window, type "sbatch ants_preprocessing_single_midway2.sbatch"
+	
+	-wait -> this took between 4-5 hours for the NTD data, but if configured correctly for parallel processing on Midway, this time should not scale up too much with additional subjects
+
+		-note: some things may need to be further optimized for large datasets
+
+	-Check progress: on Midway, navigate in File Explorer (Tux Commander) to the 'ants_preprocessing.out' (or slurm-<batch#>.out) file written to the data folder ->
+
+			-> right click -> "View File" (this file contains what would normally be displayed for ANTs processes in a Unix command window or Cygwin on Windows)
+
+4. Upon completion, download the data processing folder to a local computer (if needed)
+
+	-again, WinSCP works well here
+
+5. Run ants2bids_single.m (this can also be completed on Midway)
+
+	-Purpose: this allows a user to select the data processing folder using the point-and-click method; then the function automatically sorts the ANTs preprocessing output files into
+
+		rough correspondence with the BIDS spec
+
+	-By default, the function also calls makeMask.m to form an average probability >= .2 grey matter mask using the segmented normalized anatomical images
+
+	-Additionally, it calls rigidBodyParams.m to calculate the 6 rigid-body motion parameters from the ITK-style moco_*MOCOparams.csv files, as output by antsMotionCorr.exe
+
+		-the rigid-body params are written as comma-delimited .txt files, labelled as realignment parameters ('rp_'), congruent with the SPM naming convention, 
+			& located in data_folder\sub-%02d\qcreport\funcProc\MoCo\
+
+		-note: antsMotionCorrStats.exe also outputs 'voxelWiseDisplace_sub-%02d_run-%02d_bold.nii.gz' files, which are 4D images containing time series of voxel-specific displacement magnitudes
+			
+			-see Satterthwaite et al. (2013) & Spisák et al. (2014), cited below for more information on the voxel-wise motion correction strategy
+
+
+----------------------------References---------------------------------
+
+Satterthwaite, T. D., Elliott, M. A., Gerraty, R. T., Ruparel, K., Loughead, J., Calkins, M. E., ... & Wolf, D. H. (2013). An improved framework for confound regression and filtering for control of motion artifact in the preprocessing of resting-state functional connectivity data. Neuroimage, 64, 240-256.
+
+Spisák, T., Jakab, A., Kis, S. A., Opposits, G., Aranyi, C., Berényi, E., & Emri, M. (2014). Voxel-wise motion artifacts in population-level whole-brain connectivity analysis of resting-state FMRI. PloS one, 9(9), e104947.
