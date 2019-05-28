@@ -1,0 +1,7 @@
+listing = dir('MNI_*Warped.nii.gz');
+
+hwait = waitbar(0,'Unzipping');
+for i = 1:length(listing)
+    waitbar(i/length(listing),hwait);
+    gunzip(listing(i).name);
+end; close(hwait);

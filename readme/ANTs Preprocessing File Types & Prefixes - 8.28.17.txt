@@ -1,0 +1,33 @@
+ANTs Preprocessing File Types/Prefixes - 8.28.17
+
+STRUCTURAL:
+sub-%02d_anat.nii             % raw struct
+b_sub-%02d_anat.nii           % bias corrected struct
+groupWise_MNI_%02d_anat.nii   % warped to template
+groupWise_template0.nii.gz    % groupWise template
+groupWise_MNI_Warped.nii.gz   % groupWise after warped to MNI
+labelledTissues_%02d.nii      % image showing tissue labels/classification for each normalized struct (1=GM,2=WM,3=CSF)
+pTissue_%02d_s_%02d.nii	      % actual probability map for a given tissue & subject
+
+STRUCTURAL TRANSFORMS:
+groupWise_b_sub-%02d_anat.nii%dAffine.txt		% affine transform struct 2 groupWise template
+groupWise_b_sub-%02d_anat.nii%dWarp.nii.gz		% nonlinear transform struct 2 groupWise template
+groupWise_b_sub-%02d_anat.nii%dInverseWarp.nii.gz	% inverse nonlinear transform struct 2 groupWise template
+groupWise_MNI_0GenericAffine				% affine transform groupWise template to MNI template
+groupWise_MNI_1Warp.nii.gz				% nonlinear transform groupWise template to MNI template
+downsamp_temp_0GenericAffine.mat			% affine transform which downsamples anat template to funct template
+
+FUNCTIONAL:
+sub-%02d_run-%02d_bold.nii		% raw 4D funct
+sub-%02d_run-%02d_bold_avg.nii		% raw 3D avg funct
+w_sub-%02d_run-%02d_bold.nii		% normalized 4D funct (in original funct resolution/dimensions)
+
+FUNCTIONAL TRANSFORMS:
+coreg_sub-%02d_run-%02d_0GenericAffine.mat	% affine transform coregistering mean MoCo funct to struct
+moco_sub-%02d_run-%02d_bold_Warp.nii.gz		% 4D warp to realign funct
+
+MOTION CORRECTION (MoCo):
+moco_sub-%02d_run-%02d_bold_avg.nii.gz		% average motion corrected funct
+moco_sub-%02d_run-%02d_bold_MOCOparams.csv	% file containing affine transform parameters for funct realignment	
+voxelWiseDisplace_sub-%02d_run-%02d_bold.nii.gz	% 4D voxel-wise displacement time series (can be voxelwise regressor)
+displaceMap_sub-%02d_run-%02d_bold.nii		% 3D voxel-wise map showing average displacement from motion

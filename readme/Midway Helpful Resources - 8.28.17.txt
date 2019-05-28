@@ -1,0 +1,18 @@
+Midway Helpful Resources - 8.28.17
+
+see https://rcc.uchicago.edu/docs/using-midway/index.html
+
+To login to Midway using an internet browser:
+https://midway-login1.rcc.uchicago.edu/main/
+
+-hint: Firefox is recommended over Chrome if you are using a touch-screen enabled device
+	-Chrome apparently has a known compatibility bug with Thinlinc, in which touch-screen users
+	are restricted to ONLY using touch and not a regular mouse
+
+In Terminal (don't type quotes):
+"quota" => show current data storage, quota, hard limits, and grace period 
+"accounts balance" => show processing units allocation, usage, and balance
+"sbatch <batch_script>" => submit a batch 
+"squeue --user=<username>" => show status of any batches
+"module avail <software_name>" => check if software is available (e.g., "module avail ANTs")
+"module load <software_name>" => load software (although you need to assure that ANTs is available on your Midway, you do not need to load it; a command to load it is contained in the sbatch script)
